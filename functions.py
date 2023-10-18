@@ -7,11 +7,8 @@ from torch.utils.data import Subset
 import matplotlib.pyplot as plt
 from matplotlib.patches import Rectangle
 
-img_width = 224
-img_height = 224
-channels = 3
-
-def get_transform(train):
+def get_transform(train: bool, img_size: tuple):
+  img_height, img_width, channels = img_size
   if train:
     transform = A.Compose([A.Resize(img_height, img_width, channels),
                            A.HorizontalFlip(p=0.5),
@@ -30,10 +27,10 @@ def get_transform(train):
 def collate_fn(batch):
     return tuple(zip(*batch))
 
-def split_data(path,device, train_perc, val_perc, test_perc):
+def split_data(path,device, train_perc, val_perc, test_perc, img_size):
 
-    trainset = PillsDataset(path, get_transform(True), device)
-    valset = PillsDataset(path, get_transform(False), device)
+    trainset = PillsDataset(path, get_transform(True, img_size), device)
+    valset = PillsDataset(path, get_transform(False, img_size), device)
 
     indices = torch.randperm(len(trainset)).tolist()
 
