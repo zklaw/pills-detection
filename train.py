@@ -5,11 +5,13 @@ import math
 from dataset import PillsDataset
 from functions import get_transform, collate_fn, split_data, plot_batch
 from model import get_model
+from loops import training_loop, testing_loop
 
 batch_size = 10
 idx = 30
 a= 0.6
 img_size = (224,224,3)
+
 
 device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
 
@@ -23,10 +25,13 @@ testloader = torch.utils.data.DataLoader(testset, batch_size=batch_size, shuffle
 
 # plot_batch(trainloader)
 
-model = get_model(max_size=img_size[0], min_size=img_size[0], num_classes=2, device=device)
-params = [p for p in model.parameters() if p.requires_grad]
-optimizer = torch.optim.SGD(params, lr=0.00009, momentum = 0.0009, weight_decay=0.0006)
+model = get_model(max_size=img_size[0], min_size=img_size[0], num_classes=2, device=device, path_to_model='model_pills2.pt')
+# params = [p for p in model.parameters() if p.requires_grad]
 # optimizer = torch.optim.Adam(params, lr=0.0005)
+# model = training_loop(10, model, trainloader, valloader, optimizer, 'model_pills2.pt')
+
+testing_loop(model, testloader, threshold=0.9)
+
 
 
 

@@ -47,6 +47,15 @@ def split_data(path,device, train_perc, val_perc, test_perc, img_size):
 
     return trainset, valset, testset
 
+def plot_bboxes(bboxes, ax, linewidth=1, edgecolor='r', facecolor='none'):
+  for bbox in bboxes:
+    a = bbox[0]
+    b = bbox[1]
+    width = bbox[2]-bbox[0]
+    height = bbox[3]-bbox[1]
+    rect = Rectangle((a, b),width,height,linewidth=linewidth,edgecolor=edgecolor,facecolor=facecolor)
+    ax.add_patch(rect)
+
 def plot_batch(dataloader):
 
     x, y = next(iter(dataloader))
@@ -59,13 +68,26 @@ def plot_batch(dataloader):
 
         plt.imshow(img)
         ax = plt.gca()
-
-        for bbox in ann:
-            a = bbox[0]
-            b = bbox[1]
-            width = bbox[2]-bbox[0]
-            height = bbox[3]-bbox[1]
-            rect = Rectangle((a, b),width,height,linewidth=1,edgecolor='r',facecolor='none')
-            ax.add_patch(rect)
-
+        plot_bboxes(ann,ax)
         plt.show()
+
+
+def plot_results(images, outputs, targets, threshold):
+   
+  for img, output, ground_truth in zip(images, outputs, targets):
+
+    # output = outputs[i]
+    # ground_truth = targets[i]
+    ground_truth = ground_truth['boxes'].cpu().detach().numpy()
+
+
+    boxes = output['boxes'].cpu().detach().numpy()
+    scores = output['scores'].cpu().detach().numpy()
+    output = boxes[scores>threshold]
+
+    plt.imshow(img.astype(np.int32))
+    ax = plt.gca()
+    plot_bboxes(output,ax)
+    plot_bboxes(ground_truth,ax,edgecolor='g')
+
+    plt.show()
