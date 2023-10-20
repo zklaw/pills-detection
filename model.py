@@ -15,7 +15,7 @@ def get_model(max_size, min_size, num_classes, device, path_to_model=""):
 
   if len(path_to_model) != 0:
     try:    
-      model.load_state_dict(torch.load(path_to_model)['model_state_dict'])
+      model.load_state_dict(torch.load(path_to_model, map_location = device)['model_state_dict'])
       print('Loaded saved model')
     except FileNotFoundError:      
       print('File not found, loaded default model')
