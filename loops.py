@@ -18,7 +18,7 @@ def training_loop(num_epochs, model, trainloader, valloader, optimizer, save_pat
         model.train()
         for inputs, targets in trainloader:
 
-            inputs = [input.permute(2, 1, 0) for input in inputs] #RGB to BGR
+            inputs = [input.permute(2, 0, 1) for input in inputs] #H W C to C H W
             outputs = model(inputs, targets)
             losses = sum(loss for loss in outputs.values())
             loss_value = losses.item()
@@ -31,7 +31,7 @@ def training_loop(num_epochs, model, trainloader, valloader, optimizer, save_pat
 
         with torch.no_grad():
             for inputs, targets in valloader:
-                inputs = [input.permute(2, 1, 0) for input in inputs]
+                inputs = [input.permute(2, 0, 1) for input in inputs]
                 outputs = model(inputs, targets)
                 losses = sum(loss for loss in outputs.values())
                 loss_value = losses.item()
@@ -66,7 +66,7 @@ def testing_loop(model, testloader, threshold):
         for img in inputs:
             images.append(img.cpu().detach().numpy())
 
-        inputs = [input.permute(2, 1, 0) for input in inputs] #RGB to BGR
+        inputs = [input.permute(2, 0, 1) for input in inputs] 
 
         outputs = model(inputs)
 

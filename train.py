@@ -25,12 +25,13 @@ testloader = torch.utils.data.DataLoader(testset, batch_size=batch_size, shuffle
 
 # plot_batch(trainloader)
 
-model = get_model(max_size=img_size[0], min_size=img_size[0], num_classes=2, device=device, path_to_model='model_pills2.pt')
-# params = [p for p in model.parameters() if p.requires_grad]
-# optimizer = torch.optim.Adam(params, lr=0.0005)
-# model = training_loop(10, model, trainloader, valloader, optimizer, 'model_pills2.pt')
+model = get_model(max_size=img_size[0], min_size=img_size[0], num_classes=2, device=device, path_to_model='model_pills.pt')
+params = [p for p in model.parameters() if p.requires_grad]
+optimizer = torch.optim.Adam(params, lr=0.00005)
+model = training_loop(10, model, trainloader, valloader, optimizer, 'model_pills2.pt')
 
-testing_loop(model, testloader, threshold=0.9)
+testing_loop(model, testloader, threshold=0.8)
+
 
 
 
